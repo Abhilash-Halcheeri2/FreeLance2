@@ -1,0 +1,22 @@
+// LVMPD Permissions Auth Files
+export const lvmpdPlaywrightSealing = '.auth/lvmpdPlaywrightSealing.json'
+export const lvmpdPlaywrightRecMan = '.auth/lvmpdPlaywrightRecMan.json'
+export const lvmpdPlaywrightHQFP = '.auth/lvmpdPlaywrightHQFP.json'
+export const lvmpdPlaywrightExp = '.auth/lvmpdPlaywrightExp.json'
+export const lvmpdPlaywrightEmpInv = '.auth/lvmpdPlaywrightEmpInv.json'
+export const lvmpdPlaywrightEmpAdm = '.auth/lvmpdPlaywrightEmpAdm.json'
+export const lvmpdPlaywrightDSDB = '.auth/lvmpdPlaywrightDSDB.json'
+export const lvmpdPlaywrightBIO = '.auth/lvmpdPlaywrightBIO.json'
+export const lvmpdPlaywrightAI = '.auth/lvmpdPlaywrightAI.json'
+export const lvmpdPlaywrightITBA = '.auth/lvmpdPlaywrightITBA.json'
+export const lvmpdPlaywrightInvest = '.auth/lvmpdPlaywrightInvest.json'
+
+// Stanis Permissions Auth Files
+export const stanisPlaywrightClerks = '.auth/stanisPlaywrightClerks.json'
+export const stanisPlaywrightBackgrounds = '.auth/stanisPlaywrightBackgrounds.json'
+export const stanisPlaywrightCustodians = '.auth/stanisPlaywrightCustodians.json'
+export const stanisPlaywrightExternal = '.auth/stanisPlaywrightExternal.json'
+export const stanisPlaywrightInfotech = '.auth/stanisPlaywrightInfotech.json'
+export const stanisPlaywrightInternal = '.auth/stanisPlaywrightInternal.json'
+export const stanisPlaywrightProbation = '.auth/stanisPlaywrightProbation.json'
+export const stanisPlaywrightUsers = '.auth/stanisPlaywrightUsers.json'

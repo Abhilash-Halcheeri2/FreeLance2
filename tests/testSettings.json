@@ -1,0 +1,30 @@
+{
+    "Orgisationdetails":{
+        "OrgUrl":"https://azdoc-stage.le2.imageware.io/web/login",
+        "OrgUrllVMPD":"https://lvmpd-stage.le2.imageware.io/web/login",
+        "OrgUrlSBCSD":"https://sbcsd-stage.le2.imageware.io/web/login",
+
+        "SuperAdmin_UserName":"PlaywrightSA",
+        "SuperAdmin_UserPassword":"Tech5USA!!",
+        "Booking_Officer_UserName":"PlayWrightBookingOff",
+        "Booking_Officer_UserPassword":"Tech5USA!!",
+        "Officer_UserName":"PlaywrightOff",
+        "Officer_UserPassword":"Tech5USA!!",
+        "Booking_Officer_Email":"le2-sso-test-4@tech5-sa.com",
+        "Booking_Officer_Password":"Tech5USA!!@@",
+        "Officer_Email": "le2-sso-test-3@tech5-sa.com",
+        "Officer_Password":"Tech5USA!!@@",
+        
+        "LvmpdSuperAdmin_UserName":"PlaywrightSA",
+        "LvmpdSuperAdmin_UserPassword":"Tech5USA!!",
+        "SBCSDSuperAdmin_UserName":"PlaywrightSA",
+        "SBCSDSuperAdmin_UserPassword":"Tech5USA!!",
+        "SBCSDClass_UserName":"PlaywrightClass",
+        "SBCSDClass_UserPassword":"Tech5USA!!"
+        
+        
+       
+       
+
+        }
+}
