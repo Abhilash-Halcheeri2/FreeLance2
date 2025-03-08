@@ -14,7 +14,11 @@ import {
 import { Orgisationdetails } from "../testSettings.json";
 import {
   printSavedBookingForm,
+  SearchAndGetRecordsCount,
+  searchSavedBookingRecord,
+  testGridSorting,
   validateFormStatus,
+  waitForLoadGridData,
 } from "../utility/SavedBookingrecordsPageHelper";
 import {
   CreateCRM_Record,
@@ -23,6 +27,7 @@ import {
 } from "../utility/CRM_Adult_Page";
 import { saveBiographicsForm } from "../utility/BookingRecordsHelpers";
 import { openGridRecordsWithoutSearch } from "../utility/TransactionViewerPageHelper";
+import { CRM_AdultGrid_Headers } from "../constants/Selectors/NewBookingRecordsSelector";
 
 test.describe.configure({ mode: "parallel" });
 test.describe("SBCSD Class user TestCase Runner", () => {
@@ -65,7 +70,7 @@ test.describe("SBCSD Class user TestCase Runner", () => {
     await validateFormType(page, formTypes.CRM_Adult_Criminal);
   });
 
-  test.only("TC:Open existing record and perform print action", async ({
+  test("TC:Open existing record and perform print action", async ({
     page,
   }) => {
     await NavigateToSubArea(page, SubAreaNames.savedBookingRecords);
@@ -77,4 +82,27 @@ test.describe("SBCSD Class user TestCase Runner", () => {
     );
     await printSavedBookingForm(page);
   });
+
+
+test("Search record in CRM grid and validate them",async({page})=>{
+  await NavigateToSubArea(page,SubAreaNames.savedBookingRecords);
+  await SearchAndGetRecordsCount(page,GridType.CRM_Adult,"12345");
+
 });
+
+test("Sorting CRM Grid by first name",async({page})=>{
+  await NavigateToSubArea(page, SubAreaNames.savedBookingRecords)
+  await searchSavedBookingRecord(page, GridType.CRM_Adult, '12345')
+  await waitForLoadGridData(page)
+  await testGridSorting(page, CRM_AdultGrid_Headers.FirstName, true)
+
+})
+test.only("Sorting CRM Grid header by lastname by des",async({page})=>{
+  await NavigateToSubArea(page, SubAreaNames.savedBookingRecords)
+  await searchSavedBookingRecord(page, GridType.CRM_Adult, '12345')
+  await waitForLoadGridData(page)
+  await testGridSorting(page, CRM_AdultGrid_Headers.LastName, false)
+
+})
+
+})

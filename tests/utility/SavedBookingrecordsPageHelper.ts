@@ -1,4 +1,4 @@
-import { expect, Page } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import {
   Attributes,
   ControlType,
@@ -35,6 +35,7 @@ import {
   Biographics_form_fields,
   BiographicsFormSelectors,
   datePicker_Selectors,
+  gridLocators,
   New_BookingRecord_Selectors,
   Sex_Offender_Selectors,
   TypeOfDatePickers,
@@ -48,7 +49,8 @@ import {
 } from "./BookingRecordsHelpers";
 import { retrieveFieldValue } from "./TransactionViewerPageHelper";
 import { TransactionViewer_SearchBar } from "../constants/Selectors/TransactionViewerSelectors";
-import path from "path";
+
+
 
 /**
  * Searches for saved booking records using the provided search keyword.
@@ -60,14 +62,24 @@ import path from "path";
  */
 export async function searchSavedBookingRecords(
   page: Page,
-  searchBarLocator: string,
+  searchBarLocator: string | Locator, 
   searchValue: string
 ): Promise<string> {
-  // Wait for the search bar to be visible
-  const searchBar = page.locator(searchBarLocator);
-  if (!(await searchBar.isVisible())) {
+  let searchBar: Locator;
+
+
+    // If the locator is a string, create a Locator object from it
+    if (typeof searchBarLocator === 'string') {
+      searchBar = page.locator(searchBarLocator);  // Create Locator if it's a string
+    } else {
+      // If it's already a Locator object, just use it
+      searchBar = searchBarLocator;
+    }
+
+   // Wait for the search bar to be visible
+   if (!(await searchBar.isVisible())) {
     throw new Error(
-      `Search bar with placeholder "${searchBarLocator}" is not visible.`
+      `Search bar with locator "${searchBarLocator}" is not visible.`
     );
   }
 
@@ -982,4 +994,96 @@ const formStatus=await getFormStatus(page);
 expect(formStatus," Failed to validate the Form status ").toBe(FormStatusShouldBe);
 
   
+}/**
+ * @param page
+ * @param gridType
+ * @param searchValue
+ */
+export async function SearchAndGetRecordsCount(
+  page: Page,
+  gridType: string,
+  searchValue: string
+) {
+  await page.waitForSelector(SavedBookingRecorsPage.RecordsGrid);
+
+  // Dynamically select the search bar locator based on the provided type
+  let searchBarLocator: Locator;
+
+  switch (gridType) {
+    case GridType.CRM_Adult:
+      searchBarLocator = page.locator(gridLocators.CRM_AdultGrid_Search_Bar);
+      break;
+    case GridType.SavedBookingRecords:
+      searchBarLocator = page.locator(
+        gridLocators.SavedBookingRecords_Search_Bar
+      );
+      break;
+
+    case GridType.TransactionViewer:
+      searchBarLocator = page.locator(gridLocators.TransactionViewer_SearchBar);
+      break;
+    default:
+      throw new Error(`Search bar type '${gridType}' is not recognized.`);
+  }
+
+ 
+  await searchSavedBookingRecords(page, searchBarLocator, searchValue);
+  await page.waitForTimeout(Timeouts.DefaultLoopWaitTime);
+
+  let row = await page.$$("table tr");
+
+  let records = row.length - 1;
+  if (records < 1) {
+    throw new Error(`No results found`);
+  }
+  console.log(`received ${records} records`);
 }
+
+/**
+ * Searches for saved booking records using the provided search keyword.
+ *
+ * @param page - The Page object representing the current browser context.
+ * @param gridType - The type of grid (e.g., 'CRM', 'SavedBooking', etc.)
+ * @param searchValue - The keyword to search for in the records.
+ * @throws
+ */
+export async function searchSavedBookingRecord(
+  page: Page,
+  gridType: string,  // Pass gridType instead of searchBarLocator
+  searchValue: string
+): Promise<string> {
+  let searchBar: Locator;
+
+  // Dynamically select the search bar locator based on the provided grid type
+  switch (gridType) {
+    case GridType.CRM_Adult:
+      // CRM grid search bar locator
+      searchBar = page.locator(gridLocators.CRM_AdultGrid_Search_Bar);
+      break;
+    case GridType.SavedBookingRecords:
+      // SavedBookingRecords grid search bar locator
+      searchBar = page.locator(gridLocators.SavedBookingRecords_Search_Bar);
+      break;
+    case GridType.TransactionViewer:
+      // TransactionViewer grid search bar locator
+      searchBar = page.locator(gridLocators.TransactionViewer_SearchBar);
+      break;
+    default:
+      throw new Error(`Grid type '${gridType}' is not recognized.`);
+  }
+
+  // Wait for the search bar to be visible
+  if (!(await searchBar.isVisible())) {
+    throw new Error(`Search bar for '${gridType}' is not visible.`);
+  }
+
+  // Click on the search bar, clear any existing text, and fill it with the search keyword
+  await searchBar.click();
+  await searchBar.clear();
+  await searchBar.fill(searchValue);
+
+  return searchValue;
+}
+
+  
+

@@ -1,3 +1,5 @@
+import { CRM_AdultPage } from "../Selectors/CRM_AdultPageSelectors";
+
 export enum Timeouts {
   Smalldelay = 1000,
   DefaultLoopWaitTime = 5000, // 5 seconds
@@ -61,8 +63,11 @@ export enum Attributes {
 
 export enum GridType{
   SavedBookingRecords="SavedBookingRecords",
-  TransactionViewer="TransactionViewer"
+  TransactionViewer="TransactionViewer",
+  CRM_Adult="CRM_Adult"
+  
 }
+
 
 /**
  * Generates a random alphabetic string of the specified length.

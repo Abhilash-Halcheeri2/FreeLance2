@@ -46,6 +46,17 @@ export enum ActionButtonTypes {
 
 }
 
+export enum CRM_AdultGrid_Headers {
+  FirstName = "First Name",
+  LastName = "Last Name",
+  DateOfBirth = "Date of Birth",
+  DateOfArrest = "Date of Arrest",
+  Gender = "Gender",
+  Race = "Race",
+  PrintType = "Print Type"
+}
+
+
 export enum btns_Biographics_SubjectAppearance {
   apply = "Apply",
   clear = "Clear",
@@ -143,6 +154,12 @@ export enum Sex_Offender_Selectors {
     btn_UploadPhoto = "[data-cy='uploadPhoto']",
     btn_CropManually= "//p[text()='Crop manually']",
     btn_SavePhoto ="[class='chakra-modal__footer css-16iepwv'] [data-cy='savePhoto']"
+  }
+
+  export enum gridLocators{
+    CRM_AdultGrid_Search_Bar = "//input[@placeholder='e.g. Booking #']",
+    SavedBookingRecords_Search_Bar = "//input[@placeholder='e.g. PCN #, ADC #, First, or Last Name']",
+    TransactionViewer_SearchBar = "//input[@placeholder='eg. Booking Number",
   }
 
 
