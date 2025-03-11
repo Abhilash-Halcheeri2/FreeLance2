@@ -25,7 +25,6 @@ import {
   waitForDomContentLoad,
 } from "./helper";
 import {
-  HomePageLocators,
   itemsPage,
 } from "../constants/Selectors/HomePageSelectors";
 import { error } from "console";
@@ -34,10 +33,9 @@ import {
   Biographics_Dropdown_fields,
   Biographics_form_fields,
   BiographicsFormSelectors,
-  datePicker_Selectors,
   gridLocators,
   New_BookingRecord_Selectors,
-  Sex_Offender_Selectors,
+  printOptions,
   TypeOfDatePickers,
 } from "../constants/Selectors/NewBookingRecordsSelector";
 
@@ -50,8 +48,6 @@ import {
 import { retrieveFieldValue } from "./TransactionViewerPageHelper";
 import { TransactionViewer_SearchBar } from "../constants/Selectors/TransactionViewerSelectors";
 
-
-
 /**
  * Searches for saved booking records using the provided search keyword.
  *
@@ -62,22 +58,21 @@ import { TransactionViewer_SearchBar } from "../constants/Selectors/TransactionV
  */
 export async function searchSavedBookingRecords(
   page: Page,
-  searchBarLocator: string | Locator, 
+  searchBarLocator: string | Locator,
   searchValue: string
 ): Promise<string> {
   let searchBar: Locator;
 
+  // If the locator is a string, create a Locator object from it
+  if (typeof searchBarLocator === "string") {
+    searchBar = page.locator(searchBarLocator); // Create Locator if it's a string
+  } else {
+    // If it's already a Locator object, just use it
+    searchBar = searchBarLocator;
+  }
 
-    // If the locator is a string, create a Locator object from it
-    if (typeof searchBarLocator === 'string') {
-      searchBar = page.locator(searchBarLocator);  // Create Locator if it's a string
-    } else {
-      // If it's already a Locator object, just use it
-      searchBar = searchBarLocator;
-    }
-
-   // Wait for the search bar to be visible
-   if (!(await searchBar.isVisible())) {
+  // Wait for the search bar to be visible
+  if (!(await searchBar.isVisible())) {
     throw new Error(
       `Search bar with locator "${searchBarLocator}" is not visible.`
     );
@@ -470,10 +465,10 @@ export async function ValidateAdvancedSearchResults(
 }
 
 /**
- * 
- * @param page 
- * @param field 
- * @param value 
+ *
+ * @param page
+ * @param field
+ * @param value
  */
 export async function fillAndSearchAdvancedSearch(
   page: Page,
@@ -502,33 +497,38 @@ export async function updateBiographicFormfield(
   page: Page,
   fieldsTobeEdit: string,
   controlType = ControlType.TextBox,
-  updateFieldValue:string
+  updateFieldValue: string
 ) {
   await waitForLoadSavedForm(page);
   const formstatus = await getFormStatus(page);
-  
-  if(formstatus===formStatuses.completeAndUpdated){
+
+  if (formstatus === formStatuses.completeAndUpdated) {
     throw new Error("Cannot edit form, it is already completed and updated.");
   }
-   // Fetch the current form type
-   const formType = await getFormType(page);
-   // Fetch the field configuration for the form type
-   const fieldConfig = await getFieldConfig(formType);
-    if (!fieldConfig) {
-     throw new Error(`Field configuration not found for form type: "${formType}".`);
-   }
- 
-   // Validate if the field belongs to the form's configuration
-   const isFieldValid =
-     (controlType === ControlType.TextBox && fieldConfig.TextBox?.includes(fieldsTobeEdit)) ||
-     (controlType === ControlType.DropDown && fieldConfig.DropDown?.includes(fieldsTobeEdit)) ||
-     (controlType === ControlType.DatePicker && fieldConfig.DatePicker?.includes(fieldsTobeEdit));
- 
-   if (!isFieldValid) {
-     throw new Error(
-       `Field "${fieldsTobeEdit}" is not valid for form type: "${formType}" with control type: "${controlType}".`
-     );
-   }
+  // Fetch the current form type
+  const formType = await getFormType(page);
+  // Fetch the field configuration for the form type
+  const fieldConfig = await getFieldConfig(formType);
+  if (!fieldConfig) {
+    throw new Error(
+      `Field configuration not found for form type: "${formType}".`
+    );
+  }
+
+  // Validate if the field belongs to the form's configuration
+  const isFieldValid =
+    (controlType === ControlType.TextBox &&
+      fieldConfig.TextBox?.includes(fieldsTobeEdit)) ||
+    (controlType === ControlType.DropDown &&
+      fieldConfig.DropDown?.includes(fieldsTobeEdit)) ||
+    (controlType === ControlType.DatePicker &&
+      fieldConfig.DatePicker?.includes(fieldsTobeEdit));
+
+  if (!isFieldValid) {
+    throw new Error(
+      `Field "${fieldsTobeEdit}" is not valid for form type: "${formType}" with control type: "${controlType}".`
+    );
+  }
   const isEditButtonvisible = page.locator(BiographicsFormSelectors.editForm);
   if (isEditButtonvisible) {
     await isEditButtonvisible.click();
@@ -558,30 +558,32 @@ export async function updateBiographicFormfield(
     default:
       throw new Error(`Unsupported control type: ${controlType}`);
   }
-
 }
 
 /**
- * 
- * @param page 
+ *
+ * @param page
  * @returns retunrs form type (ex Sex_offender, ADC..)
  */
-export async function getFormType(page:Page):Promise<string>{
+export async function getFormType(page: Page): Promise<string> {
   await waitForLoadSavedForm(page);
-  const formType =await page.locator("(//div[@class='chakra-stack css-va4dcs']//p)[1]").textContent();
+  const formType = await page
+    .locator("(//div[@class='chakra-stack css-va4dcs']//p)[1]")
+    .textContent();
   return formType?.trim() || "unknown";
-
 }
 
 /**
  * Returns the field configuration for a given form type.
- * 
+ *
  * @param formType - The form type.
  * @returns A configuration object mapping control types to their respective fields.
  */
-export async function getFieldConfig(
-  formType: string
-): Promise<{ TextBox?: string[]; DropDown?: string[]; DatePicker?: string[] } | null> {
+export async function getFieldConfig(formType: string): Promise<{
+  TextBox?: string[];
+  DropDown?: string[];
+  DatePicker?: string[];
+} | null> {
   const formConfigs: Record<
     string,
     { TextBox?: string[]; DropDown?: string[]; DatePicker?: string[] }
@@ -654,7 +656,7 @@ export async function getFieldConfig(
 }
 
 /**
- * 
+ *
  * @param page referance
  */
 export async function waitforLoadDialog(page: Page) {
@@ -662,17 +664,19 @@ export async function waitforLoadDialog(page: Page) {
   await page.waitForSelector(BiographicsFormSelectors.dailog);
 }
 
-export async function selectDialogOption(page:Page,ActionPerform:string){
+export async function selectDialogOption(page: Page, ActionPerform: string) {
   await waitforLoadDialog(page);
   const locator =
     ActionPerform === ActionButtonTypes.Print
       ? BiographicsFormSelectors.dialogOpt_print
       : stringFormat(BiographicsFormSelectors.dialogOption_btn, ActionPerform);
 
-      const button = page.locator(locator);
-      if (!(await button.isVisible())) {
-        throw new Error(`The dialog option for action "${ActionPerform}" is not visible`);
-      }
+  const button = page.locator(locator);
+  if (!(await button.isVisible())) {
+    throw new Error(
+      `The dialog option for action "${ActionPerform}" is not visible`
+    );
+  }
   await button.click();
   console.log(`Action "${ActionPerform}" was successfully performed.`);
 }
@@ -683,7 +687,7 @@ export async function selectDialogOption(page:Page,ActionPerform:string){
  * @param page -  Page instance
  * @returns The current form status as a string
  *  @throws Will throw an error with the provided failure message if the status cannot be retrieved.
- * 
+ *
  */
 export async function getFormStatus(page: Page): Promise<string> {
   await waitForLoadSavedForm(page);
@@ -711,7 +715,7 @@ export async function sealSavedBookingRecord(page: Page) {
   ).not.toEqual(formStatuses.sealed);
   await clickFormActionButton(page, ActionButtonTypes.Seal);
   await waitforLoadDialog(page);
-  await selectDialogOption(page,ActionButtonTypes.Seal);
+  await selectDialogOption(page, ActionButtonTypes.Seal);
   await page.waitForTimeout(6000);
   await waitForLoadSavedForm(page);
   await page.waitForTimeout(6000);
@@ -732,7 +736,7 @@ export async function UnsealSavedBookingsealRecord(page: Page) {
   );
   await clickFormActionButton(page, ActionButtonTypes.Unseal);
   await waitforLoadDialog(page);
-  await selectDialogOption(page,ActionButtonTypes.Unseal);
+  await selectDialogOption(page, ActionButtonTypes.Unseal);
   await page.waitForTimeout(6000);
   await waitForLoadSavedForm(page);
   await page.waitForTimeout(6000);
@@ -741,17 +745,42 @@ export async function UnsealSavedBookingsealRecord(page: Page) {
     formStatuses.sealed
   );
 }
-
 /**
- *
- * @param page referance
+ * 
+ * @param page The Page object 
+ * @param printOption  The print option to select (e.g., SummaryBookingReport). Defaults to SummaryBookingReport
  */
-export async function printSavedBookingForm(page: Page) {
+export async function printSavedBookingForm(page: Page,printOption:string=printOptions.SummaryBookingReport) {
   await waitForLoadSavedForm(page);
   await clickFormActionButton(page, ActionButtonTypes.Print);
   await waitforLoadDialog(page);
-  await selectDialogOption(page,ActionButtonTypes.Print);
+  await SelectPrintOption(page,printOption);
+  await selectDialogOption(page, ActionButtonTypes.Print);
+  }
+
+/**
+ * 
+ * @param page 
+ * @param printOption 
+ */
+export async function SelectPrintOption(page:Page,printOption:string) {
+
+  //const options=await page.$$(BiographicsFormSelectors.printOptions);
+  const matchingElement = page.locator(stringFormat(BiographicsFormSelectors.printOptions, printOption));
+
+  if (await matchingElement.count() > 0) {
+    // Get the corresponding radio button label
+    const radioButton = matchingElement.locator('//ancestor::div[contains(@class, "chakra-stack")]/preceding-sibling::label');
+
+    // Click the radio button
+    await radioButton.click();
+
+    console.log(`Clicked the printOption button for: ${printOption}`);
+} else {
+    console.log(`printOption "${printOption}" not found.`);
 }
+};
+
 
 /**
  *
@@ -767,8 +796,8 @@ export async function deleteSavedBookingForm(page: Page): Promise<string> {
   );
 
   await clickFormActionButton(page, ActionButtonTypes.Delete);
-  await waitforLoadDialog(page)
-  await selectDialogOption(page,ActionButtonTypes.Delete);
+  await waitforLoadDialog(page);
+  await selectDialogOption(page, ActionButtonTypes.Delete);
 
   return PCN_ID;
 }
@@ -875,15 +904,20 @@ export async function testGridSorting(
 }
 
 /**
- * 
+ *
  * @param page referance
  * @param timeout timeout default 1 min
  */
-export async function waitForLoadGridData(page: Page, timeout=Timeouts.OneMinuteTimeout) {
+export async function waitForLoadGridData(
+  page: Page,
+  timeout = Timeouts.OneMinuteTimeout
+) {
   try {
-    await waitForDomContentLoad(page); 
+    await waitForDomContentLoad(page);
     await Promise.all([
-      page.waitForSelector(SavedBookingRecorsPage.RecordsGrid, { timeout: timeout}),
+      page.waitForSelector(SavedBookingRecorsPage.RecordsGrid, {
+        timeout: timeout,
+      }),
       page.waitForSelector("//table//th[1]", { timeout: timeout }),
       page.waitForSelector("//tbody//tr[1]", { timeout: timeout }),
     ]);
@@ -895,7 +929,7 @@ export async function waitForLoadGridData(page: Page, timeout=Timeouts.OneMinute
 }
 
 /**
- * 
+ *
  * @param page referance
  */
 export async function waitForLoadSavedForm(page: Page) {
@@ -982,19 +1016,19 @@ export async function deleteAndvalidateDeletedRecordInGrid(
   }
 }
 
-export async function waitforAdvancedsearchDialog(page:Page){
+export async function waitforAdvancedsearchDialog(page: Page) {
   await waitForDomContentLoad(page);
   await page.waitForSelector(AdvancedSearchLocators.Advancedsearch_Dailog);
-
 }
 
-export async function validateFormStatus(page:Page,FormStatusShouldBe) {
-const formStatus=await getFormStatus(page);
+export async function validateFormStatus(page: Page, FormStatusShouldBe) {
+  const formStatus = await getFormStatus(page);
 
-expect(formStatus," Failed to validate the Form status ").toBe(FormStatusShouldBe);
-
-  
-}/**
+  expect(formStatus, " Failed to validate the Form status ").toBe(
+    FormStatusShouldBe
+  );
+}
+/**
  * @param page
  * @param gridType
  * @param searchValue
@@ -1026,7 +1060,6 @@ export async function SearchAndGetRecordsCount(
       throw new Error(`Search bar type '${gridType}' is not recognized.`);
   }
 
- 
   await searchSavedBookingRecords(page, searchBarLocator, searchValue);
   await page.waitForTimeout(Timeouts.DefaultLoopWaitTime);
 
@@ -1049,7 +1082,7 @@ export async function SearchAndGetRecordsCount(
  */
 export async function searchSavedBookingRecord(
   page: Page,
-  gridType: string,  // Pass gridType instead of searchBarLocator
+  gridType: string, // Pass gridType instead of searchBarLocator
   searchValue: string
 ): Promise<string> {
   let searchBar: Locator;
@@ -1085,5 +1118,10 @@ export async function searchSavedBookingRecord(
   return searchValue;
 }
 
-  
+export async function GridAdvancedSearch(page:Page,advancedsearchFieldValue:string,operatorTobeSlect:string) {
+  await selectAdvancedSearchFieldValue(page,advancedsearchFieldValue);
+  await selectAdvancedSearchOperator(page,advancedsearchFieldValue,operatorTobeSlect);
+ // await selectAdvancedSearchFieldValue(page,)
 
+  
+}

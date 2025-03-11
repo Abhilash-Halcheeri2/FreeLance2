@@ -1,8 +1,5 @@
 import { test, Page } from "@playwright/test";
-import {
-  ControlType,
-  SubAreaNames,
-} from "../constants/Commons/commons";
+import { ControlType, SubAreaNames } from "../constants/Commons/commons";
 import {
   clearCache,
   loginToAccount,
@@ -24,8 +21,10 @@ import {
   SavedBookingRecorsPage,
 } from "../constants/Selectors/RecordsPageSelectors";
 import { SearchAuditHistory } from "../utility/AuditPage";
-import { AuditSearchEventTypes, AuthEventAction } from "../constants/Selectors/AuditPageSelectors";
-
+import {
+  AuditSearchEventTypes,
+  AuthEventAction,
+} from "../constants/Selectors/AuditPageSelectors";
 
 test.describe.configure({ mode: "parallel" });
 test.describe("SBCSD Admin User TestCase Runner", () => {
@@ -48,7 +47,6 @@ test.describe("SBCSD Admin User TestCase Runner", () => {
   test("TC007:Login test with valid credantials", async () => {
     console.log("passed");
   });
-
 
   test("TC009:Search and validate the saved booking record", async ({
     page,
@@ -84,12 +82,12 @@ test.describe("SBCSD Admin User TestCase Runner", () => {
       "2023/02/10"
     );
   });
-  test("Search audit History",async({page})=>{
-    await NavigateToSubArea(page,SubAreaNames.audit);
-    await SearchAuditHistory(page,AuditSearchEventTypes.auth,AuthEventAction.login);
-   
-  })
-  
-
-
-  })
+  test("Search audit History", async ({ page }) => {
+    await NavigateToSubArea(page, SubAreaNames.audit);
+    await SearchAuditHistory(
+      page,
+      AuditSearchEventTypes.auth,
+      AuthEventAction.login
+    );
+  });
+});

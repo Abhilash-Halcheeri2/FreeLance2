@@ -1,4 +1,4 @@
-import { test, expect, Page, BrowserContext } from "@playwright/test";
+import { Page, BrowserContext } from "@playwright/test";
 import {
   HomePageLocators,
   itemsPage,
@@ -212,24 +212,23 @@ export async function NavigateToSubArea(
       case SubAreaNames.ADC_Intake:
       case SubAreaNames.Crim_JusticeApplicant:
       case SubAreaNames.Sex_Offender:
+        newBookingRecordExpanded = await page
+          .locator(
+            stringFormat(itemsPage.subArea, SubAreaNames.New_Booking_Record)
+          )
+          .getAttribute(Attributes.AriaExpanded);
+        if (newBookingRecordExpanded) {
+          await clickOnSubArea(page, SubAreaNames.New_Booking_Record);
+        }
 
-       newBookingRecordExpanded = await page
-      .locator(
-        stringFormat(itemsPage.subArea, SubAreaNames.New_Booking_Record)
-      )
-      .getAttribute(Attributes.AriaExpanded);
-    if (newBookingRecordExpanded) {
-      await clickOnSubArea(page, SubAreaNames.New_Booking_Record);
-    }
+        await clickOnSubArea(page, subAreaName);
+        await page.waitForSelector(
+          New_BookingRecord_Selectors.BookingPage_FormHeader
+        );
+        await page.waitForTimeout(Timeouts.CommandbarButtonTimeout);
+        break;
 
-    await clickOnSubArea(page, subAreaName);
-    await page.waitForSelector(
-      New_BookingRecord_Selectors.BookingPage_FormHeader
-    );
-    await page.waitForTimeout(Timeouts.CommandbarButtonTimeout);
-    break;
-
-    case SubAreaNames.CRM_AdultCriminal:
+      case SubAreaNames.CRM_AdultCriminal:
         const newRecordExpanded = await page
           .locator(stringFormat(itemsPage.subArea, SubAreaNames.newRecord))
           .getAttribute(Attributes.AriaExpanded);
@@ -237,7 +236,7 @@ export async function NavigateToSubArea(
         if (newRecordExpanded) {
           await clickOnSubArea(page, SubAreaNames.newRecord);
         }
-         newBookingRecordExpanded = await page
+        newBookingRecordExpanded = await page
           .locator(
             stringFormat(itemsPage.subArea, SubAreaNames.New_Booking_Record)
           )
@@ -380,10 +379,15 @@ export async function clearCache(context: BrowserContext) {
 }
 
 /**
- * 
+ *
  * @param page page reference
  * @param loadTimeout Page load timeout. Default - 10 sec
  */
-export async function waitForDomContentLoad(page:Page,loadTimeout:number=Timeouts.ConnectionTimeout):Promise<void>{
-  await page.waitForLoadState(LoadState.domcontentloaded,{timeout:loadTimeout});
+export async function waitForDomContentLoad(
+  page: Page,
+  loadTimeout: number = Timeouts.ConnectionTimeout
+): Promise<void> {
+  await page.waitForLoadState(LoadState.domcontentloaded, {
+    timeout: loadTimeout,
+  });
 }

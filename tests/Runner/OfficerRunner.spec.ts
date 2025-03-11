@@ -12,10 +12,10 @@ test.describe(" User Officer test runner", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(Orgisationdetails.OrgUrl);
     await loginToAccount(
-        page,
-        Orgisationdetails.Officer_UserName,
-        Orgisationdetails.Officer_UserPassword
-          );
+      page,
+      Orgisationdetails.Officer_UserName,
+      Orgisationdetails.Officer_UserPassword
+    );
   });
 
   test.afterEach(async ({ page }) => {
@@ -64,4 +64,3 @@ test.describe(" User Officer test runner", () => {
     ).toBe(CardsErrorMessage);
   });
 });
-

@@ -75,7 +75,8 @@ export enum BiographicsFormSelectors {
   dailog = "//*[@role='dialog']//header[contains(@class,'chakra-modal__header')]",
   dialogOpt_print = "//button[@type='submit'] [text()='Print']",
   formStatus= "[class='chakra-stack css-7dpwap'] p",
-  dialogOption_btn = "//button[@type='button'] [text()='{0}']"
+  dialogOption_btn = "//button[@type='button'] [text()='{0}']",
+   printOptions = "//p[text()='{0}']"
 }
 
 export enum Biographics_form_fields {
@@ -114,6 +115,13 @@ export enum TabLists {
   smt = "SMT",
   fingerPrint = "Fingerprint",
   iris = "Iris",
+}
+
+export enum printOptions{
+  SummaryBookingReport = "Summary Booking Report",
+  FullBookingReport = "Full Booking Report",
+  FingerprintCard = "Fingerprint Card",
+  Other = "Other",
 }
 
 export enum New_BookingRecord_Selectors {

@@ -1,4 +1,4 @@
-import { test, expect, Page } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { clearAndFillTextBox, NavigateToSubArea } from "./helper";
 import {
   ControlType,
@@ -17,14 +17,12 @@ import {
 } from "../constants/Selectors/RecordsPageSelectors";
 import {
   selectDialogOption,
-  selectOptFromAdvancedsearchDD,
   waitforLoadDialog,
   waitForLoadGridData,
   waitForLoadSavedForm,
 } from "./SavedBookingrecordsPageHelper";
 import { error } from "console";
 import { dropdown_successMessage } from "../constants/Commons/constants";
-import { HomePageLocators } from "../constants/Selectors/HomePageSelectors";
 import {
   ActionButtonTypes,
   BiographicsFormSelectors,
@@ -228,7 +226,8 @@ export async function openGridRecordsWithoutSearch(
   }
 
   // Adjust column number if gridType is SavedBooking
-  const adjustedColumnNum = gridType === GridType.SavedBookingRecords ? 1 : columnNum;
+  const adjustedColumnNum =
+    gridType === GridType.SavedBookingRecords ? 1 : columnNum;
 
   const cellXPath = `//table//tr[${rowNum}]//td[${adjustedColumnNum}]`;
   const cellLocator = page.locator(cellXPath);
@@ -303,7 +302,7 @@ export async function retrieveFieldValue(
 
   // Wait for the field to be visible
   await page.locator(fieldLocator).waitFor({ state: "visible" });
-   // Get the value attribute of the field
+  // Get the value attribute of the field
   const fieldValue = await page.locator(fieldLocator).getAttribute("value");
 
   if (!fieldValue) {
@@ -318,13 +317,18 @@ export async function retrieveFieldValue(
 
 export async function checkRecordAvailability(page: Page) {
   await waitForLoadGridData(page);
-  const restoreBtn = page.locator(stringFormat(BiographicsFormSelectors.dialogOption_btn, ActionButtonTypes.Restore));
+  const restoreBtn = page.locator(
+    stringFormat(
+      BiographicsFormSelectors.dialogOption_btn,
+      ActionButtonTypes.Restore
+    )
+  );
   const isRestoreBtnEnabled = await restoreBtn.isVisible();
 
   if (isRestoreBtnEnabled) {
     await restoreBtn.click();
     await waitforLoadDialog(page);
-    await selectDialogOption(page,ActionButtonTypes.YesRestoreIt);
+    await selectDialogOption(page, ActionButtonTypes.YesRestoreIt);
     await page.reload();
   }
 }

@@ -6,7 +6,7 @@ import {
 } from "../constants/Commons/commons";
 import {
   Biographics_form_fields,
-    New_BookingRecord_Selectors,
+  New_BookingRecord_Selectors,
   btns_Biographics_SubjectAppearance,
   Sex_Offender_Selectors,
   BiographicsFormSelectors,
@@ -17,10 +17,7 @@ import {
 } from "../constants/Selectors/NewBookingRecordsSelector";
 import { clearAndFillTextBox } from "./helper";
 
-
-import {
-  getFormStatus,
-} from "./SavedBookingrecordsPageHelper";
+import { getFormStatus } from "./SavedBookingrecordsPageHelper";
 
 export async function navigateToBookingTab(page: Page, tabName: string) {
   // Wait for the header of the Booking page to ensure the page has loaded
@@ -95,9 +92,8 @@ export async function selectOptionsFromBiographicsDD(
     // Find and click the desired option
     let optionFound = false; // Flag to track if the option is found
     for (const opt of ddList) {
-    
       const txt = await opt.textContent();
-    
+
       if (txt?.includes(selectOption)) {
         await opt.click(); // Click the matching option
         console.log(`Selected option from DD: ${DrowndownType} = ${txt}`);
@@ -149,8 +145,8 @@ export async function saveBiographicsForm(page: Page) {
   }
 }
 
-export async function saveAndSubmitBiographicsForm(page: Page){
- await saveBiographicsForm(page);
+export async function saveAndSubmitBiographicsForm(page: Page) {
+  await saveBiographicsForm(page);
   await page
     .locator(
       stringFormat(
@@ -502,7 +498,7 @@ export async function BiographicsFormDateSelect(
       break;
 
     case TypeOfDatePickers.SentenceDate:
-    case TypeOfDatePickers.CRM_DateOfArrest:  
+    case TypeOfDatePickers.CRM_DateOfArrest:
       // Check if the target date is today or in the past
       if (targetDate > today) {
         throw new Error(
@@ -525,5 +521,3 @@ export async function BiographicsFormDateSelect(
   }
   console.log(`Setting date ${dateToBeSelect} for picker ${date_picker}`);
 }
-
-
